@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import axiosInstance from "../axios/axiosInstance";
 import handleApiError from "../utils/handleApiError";
+import { useAuth } from "../utils/AuthContext";
 
 // Define the form data interface
 interface LoginForm {
@@ -9,6 +10,7 @@ interface LoginForm {
 }
 
 const Login = () => {
+  const { login } = useAuth(); // Get login function from context
   const {
     register,
     handleSubmit,
@@ -16,13 +18,14 @@ const Login = () => {
   } = useForm<LoginForm>();
 
   const onSubmit = async (data: LoginForm) => {
-    try{
-    const response = await axiosInstance.post("/auth/login", data);
+    try {
+      const response = await axiosInstance.post("/auth/login", data);
 
-    // Your login logic here
-    console.log("response is", response);}
-    catch(err){
-      handleApiError(err)
+      // Your login logic here
+      console.log("response is", response);
+      await login(); // refreshUser will fetch the user info
+    } catch (err) {
+      handleApiError(err);
     }
   };
 
