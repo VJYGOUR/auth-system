@@ -3,33 +3,27 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { AuthProvider } from "./utils/AuthContext";
-import Dashboard from "./pages/Dashboard";
+import Layout from "./components/Layout";
+import Signup from "./pages/Signup";
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        {/* Wrap all pages in Layout to show Navbar globally */}
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-        {/* Protected section */}
-        {/* You go to /dashboard.
-
-React Router renders <ProtectedRoute> first.
-
-Inside <ProtectedRoute>, <Outlet /> renders <Dashboard /> because that’s the matched child route.
-
-If you go to /settings, <Outlet /> will render <Settings />. */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Route>
-
-        {/* Example role-based */}
-        {/* <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Route> */}
       </Routes>
     </AuthProvider>
   );

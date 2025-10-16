@@ -11,6 +11,7 @@ export const signup = async (req, res) => {
   try {
     // Check if user already exists in database
     const userExists = await User.findOne({ email });
+    console.log("user exist", userExists);
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -116,11 +117,13 @@ export const refreshToken = async (req, res) => {
 };
 
 export const me = (req, res) => {
-  const token = req.cookies.token;
+  console.log("executed");
+  const token = req.cookies.accessToken;
+  console.log("token", token);
   if (!token) return res.status(401).json({ message: "Not authenticated" });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     res.json({ user: decoded });
   } catch (err) {
     res.status(401).json({ message: "Invalid token" });
